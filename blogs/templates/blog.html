@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Blog
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>Blog</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span>Blog</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- blog section start -->
+	<section class="latest-blog section-padding">
+		<div class="container">
+			<ul class="blog-row clearfix">
+				<li>
+					<div class="row">
+						{% if messages %}
+						<ul class="messages">
+							{% for message in messages %}
+							<li{% if message.tags %} style="background: rgba(0,255,0,0.3); padding: 10px 30px; border-radius: 5px; width: 100%; font-size: 18px;" class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						{% for post in posts %}
+						<div class="col-sm-4">
+							<div class="l-blog-text">
+								<div class="banner"><a href="{% url 'blogs:single_post' slug=post.slug %}"><img src="{{post.cover_image.url}}" alt="" /></a></div>
+								<div class="s-blog-text">
+									<h4>
+										<a href="{% url 'blogs:single_post' slug=post.slug %}">{{post.title}}</a>
+									</h4>
+									<span>
+										By : <a href="#">{{post.author}}</a> | <a href="#">{{post.post.all.count}} Comments</a>
+									</span>
+									<p>{{post.short_description}}</p>
+								</div>
+								<div class="date-read clearfix" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+									<a href="#"><i class="mdi mdi-clock"></i>{{post.created_at|date:"j M Y"}}</a>
+									<a href="{% url 'blogs:single_post' slug=post.slug %}">read more</a>
+									<a href="{% url 'blogs:liked_post' post.id %}">Like</a>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</li>
+			</ul>
+			<div class="pagnation-ul">
+				<ul class="clearfix">
+
+					{% if page_obj.has_previous %}
+					<li><a href="?page={{page_obj.previous_page_number}}"><i class="mdi mdi-menu-left"></i></a></li>
+					{% endif %}
+
+					{% for page in page_obj.paginator.page_range %}
+						{% if page is page_obj.number %}
+						<li><a style="text-decoration: underline; color:red; font-weight: bold;" href="?page={{page}}">{{page}}</a></li>
+						{% else %}
+						<li><a href="?page={{page}}">{{page}}</a></li>
+						{% endif %}
+					{% endfor %}
+
+					{% if page_obj.has_next %}
+					<li><a href="?page={{page_obj.next_page_number}}"><i class="mdi mdi-menu-right"></i></a></li>
+					{% endif %}
+
+
+				</ul>
+			</div>
+		</div>
+	</section>
+	<!-- blog section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

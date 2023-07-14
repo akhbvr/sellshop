@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>Register</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span>Register</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- login content section start -->
+	<section class="pages login-page section-padding">
+		<div class="container">
+			<div class="row" style="display: flex; justify-content: center;">
+				<div class="col-sm-8">
+					<div class="main-input padding60 new-customer">
+						<div class="log-title">
+							<h3><strong>new customers</strong></h3>
+						</div>
+						<div class="custom-input">
+							<form action="{% url 'users:register' %}" method="POST">
+								{% csrf_token %}
+								{{form}}
+								<input type="text" name="name" placeholder="Name here.." />
+								<input type="text" name="email" placeholder="Email Address.." />
+								<input type="text" name="number" placeholder="Phone Number.." />
+								<input type="text" name="address" placeholder="Password" />
+								<input type="password" name="password" placeholder="Confirm Password" />
+								<label class="first-child">
+									<input type="checkbox" name="rememberme" value="forever">
+									Sign up for our newsletter!
+								</label>
+								<div class="submit-text coupon">
+									<button type="submit" >Register</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- login content section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

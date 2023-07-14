@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>My Account</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span>My Account</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- My account content section start -->
+	<section class="pages my-account-page section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6">
+					<div class="padding60">
+						<div class="log-title">
+							<h3><strong>My Account</strong></h3>
+						</div>
+						<div class="prament-area main-input">
+							<ul class="panel-group" id="accordion">
+								<li class="panel">
+									<div class="account-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapse1">
+										<label>
+											<input type="radio" checked value="forever" name="rememberme"/>
+											add my frist address
+										</label>
+									</div>
+									<div id="collapse1" class="panel-collapse collapse in">
+										<div class="single-log-info">
+											<div class="bulling-title">
+												<h5>Shipping Address</h5>
+												<p>To add a new address, please fill out the form below.</p>
+											</div>
+											<div class="custom-input">
+												<form action="" method="POST">
+													{% csrf_token %}
+													{{form}}
+													{{form.errors}}
+													<input type="hidden" name="is_shipping_address">
+													<button style="padding: 10px 20px; width: 30%; border: none; background: rgba(0,0,0,0.04); margin-top: 10px;" type="submit">click</button>
+												</form>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="panel panelimg">
+									<div class="account-title"  data-toggle="collapse" data-parent="#accordion" data-target="#collapse2">
+										<label>
+											<input type="radio" value="forever" name="rememberme"/>
+											My credit slips
+										</label>
+									</div>
+									<div id="collapse2" class="paypal-dsc panel-collapse collapse">
+										<div class="prayment-dsc">
+											<div class="bulling-title">
+												<h5>Order history</h5>
+											</div>
+											<p>Here are the orders you've placed since your account was created.</p>
+											<span>You have not placed any orders.</span>
+										</div>
+									</div>
+								</li>
+								<li class="panel">
+									<div class="account-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapse4">
+										<label>
+											<input type="radio" value="forever" name="rememberme"/>
+											My personal information
+										</label>
+									</div>
+									<div id="collapse4" class="panel-collapse collapse">
+										<div class="single-log-info">
+											<div class="bulling-title">
+												<h5>Your personal information</h5>
+												<p>Please be sure to update your personal information if it has changed</p>
+											</div>
+											<form action="" method="POST" enctype="multipart/form-data">
+												{% csrf_token %}
+												{% if request.user.image %}
+													<img src="{{ request.user.image.url }}" style="width: 100px; height: 100px; object-fit: cover;">
+												{% else %}
+													<img src="{% static 'img/default_profile.png' %}" style="width: 100px; height: 100px; object-fit: cover;">
+												{% endif %}
+												<br>
+												<label>Username:</label>
+												<br>
+												<input type="text" value="{{request.user.username}}" style="padding: 10px 20px; border: none; background: rgba(0,0,0,0.04); width: 100%;" disabled>
+												<br>
+												{{profile_form}}
+												{{profile_form.errors}}
+												<Br>
+												<input type="hidden" name="is_profile">
+												<button style="padding: 10px 20px; width: 30%; border: none; background: rgba(0,0,0,0.04); margin-top: 10px;" type="submit">click</button>
+											</form>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<div class="my-right-side">
+						<a href="wishlist.html">My wishlists</a>
+						<a href="cart.html">Order history and details</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- my account content section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

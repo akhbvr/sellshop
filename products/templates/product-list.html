@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Product List View
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>Product List View</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span>Shop</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- product-list-view content section start -->
+	<section class="pages products-page section-padding-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-4 col-md-3">
+					<div class="sidebar left-sidebar">
+						<div class="s-side-text">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">Categories</h4>
+								<h5 class="floatright"><a href="#">All</a></h5>
+							</div>
+							<div class="categories left-right-p">
+								<ul id="accordion" class="panel-group clearfix">
+									{% for category in categories %}
+									{% if category.parent is None %}
+									<li class="panel">
+										<div data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{forloop.counter}}">
+											<a href="{% url 'products:product_list' %}?category_id={{ category.id }}" class="medium-a">
+												{{category.name}}
+											</a>
+										</div>
+										<div class="panel-collapse collapse in" id="collapse{{forloop.counter}}">
+											<div class="normal-a">
+												{% for sub_category in category.parent_category.all %}
+												<a href="{% url 'products:product_list' %}?sub_category_id={{ sub_category.id }}">{{sub_category.name}}</a>
+												{% endfor %}
+											</div>
+										</div>
+									</li>
+									{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+
+						{% comment %}  
+						<div class="s-side-text">
+							<div class="sidebar-title">
+								<h4>price</h4>
+							</div>
+							<div class="range-slider clearfix">
+								<form action="#" method="get">
+									<label><span>You range</span> <input type="text" id="amount" readonly /></label>
+									<div id="slider-range"></div>
+								</form>
+							</div>
+						</div>
+						{% endcomment %}
+
+						{% for attribute in attributes %}
+						<form method="GET" action="{% url 'products:product_list' %}">
+						<div class="s-side-text" style="margin-bottom: 20px;">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">{{attribute.name}}</h4>
+								<h5 class="floatright"><a href="#">All</a></h5>
+							</div>
+							<div class="size-select clearfix">
+								{% for value in attribute.attributevalue_attribute.all %}
+								<a style="width: max-content; padding-right: 15px; padding-left: 15px;" href="{% url 'products:product_list' %}?{{attribute.name|lower}}_id={{value.id}}">{{value}}</a>
+								{% endfor %}
+							</div>
+						</div>
+						</form>
+						{% endfor %}
+
+						<div class="s-side-text">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">brands</h4>
+								<h5 class="floatright"><a href="#">All</a></h5>
+							</div>
+							<div class="brands-select clearfix">
+								<form method="GET" action="{% url 'products:product_list' %}">
+									<ul>
+										{% for brand in brands %}
+										<li style="width: 100%; text-align: center;">
+											<a style="font-size: 15px; width: 100%; text-align: center; padding-left: 0;" href="{% url 'products:product_list' %}?brand_id={{ brand.id }}">{{brand.name}}</a>
+										</li>
+										{% endfor %}
+									</ul>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-8 col-md-9">
+					<div class="right-products">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="section-title clearfix">
+									<ul>
+										<li>
+											<ul class="nav-view">
+												<li class="active"><a data-toggle="tab" href="#list"> <i class="mdi mdi-view-list"></i> </a></li>
+											</ul>
+										</li>
+										<li class="sort-by floatright">
+											{{productvariation_list.count}} Results
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="tab-content grid-content">
+								<div class="tab-pane fade active in" id="list">
+									<div class="col-xs-12">
+										{% for product in productvariation_list %}
+										<div class="single-list-view">
+											<div class="row">
+												<div class="col-xs-12 col-md-4">
+													<div class="list-img">
+														<div class="product-img">
+															<div class="pro-type sell">
+																<span>sell</span>
+															</div>
+															<a href="{% url "products:single_product" slug=product.slug %}"><img src="{{product.main_image.url}}" alt="{{product.product.title}}" /></a>
+														</div>
+													</div>
+												</div>
+												<div class="col-xs-12 col-md-8">
+													<div class="list-text">
+														<h3>{{product.product.name}}</h3>
+														<span>{{product.product.category}}</span>
+														<div class="ratting floatright">
+															<p>( {{product.avg_rating}} Rating )</p>
+															{% if product.avg_rating == 0 %}
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating > 0 and product.avg_rating < 1 %}
+																<i class="mdi mdi-star-half"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating == 1 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating > 1 and product.avg_rating < 2 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-half"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating == 2 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating > 2 and product.avg_rating < 3 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-half"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating == 3 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-outline"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating > 3 and product.avg_rating < 4 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-half"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating == 4 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-outline"></i>
+															{% elif product.avg_rating > 4 and product.avg_rating < 5 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star-half"></i>
+															{% elif product.avg_rating >= 5 %}
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+																<i class="mdi mdi-star"></i>
+															{% endif %}
+														</div>
+														
+														<h5>
+															{{product.price}} $
+														</h5>
+														<p>{{product.short_desctiption}}</p>
+														<div class="list-btn">
+															<a href="#">add to cart</a>
+															<a style="cursor:pointer;" onclick="addProduct({{product.id}})">wishlist</a>
+						<script>
+							function addProduct(id) {
+								const formData = {
+								  "product_variation": [id],
+								};
+
+								fetch("http://localhost:8000/api/wishlist/", {
+								  method: "POST",
+								  headers: {
+									"Content-type": "application/json",
+									// "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg4OTA0NDQ1LCJpYXQiOjE2ODg5MDA4NDUsImp0aSI6ImM1OWNjY2MyZDM0MTQwNzVhMjNhMTljNzMzNTQ4YmI1IiwidXNlcl9pZCI6N30.fpripW9EWt69yytNwIaIZSs8StkYRSG1w1R4rcmGD8U",
+									'X-CSRFToken': getCookie('csrftoken')
+								  },
+								  body: JSON.stringify(formData)
+								})
+								.then(response => {
+								  if (response.ok) {
+									alert('Product added successfully');
+								  } else {
+									alert('The product is in the wishlist or an error occurred while adding the product');
+								  }
+								})
+								.catch(error => {
+								  alert('The product is in the wishlist or an error occurred while adding the product:', error);
+								});
+							  }
+							  
+							  function getCookie(name) {
+								let cookieValue = null;
+								if (document.cookie && document.cookie !== '') {
+									const cookies = document.cookie.split(';');
+									for (let i = 0; i < cookies.length; i++) {
+										const cookie = cookies[i].trim();
+										if (cookie.substring(0, name.length + 1) === (name + '=')) {
+											cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+									  break;
+									}
+								  }
+								}
+								return cookieValue;
+							  }
+							  
+						</script>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- single product end -->
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="pagnation-ul">
+									<ul class="clearfix">
+
+										{% if page_obj.has_previous %}
+											<li><a href="?page={{ page_obj.previous_page_number }}&{{ query_params }}"><i class="mdi mdi-menu-left"></i></a></li>
+										{% endif %}
+
+										{% for page_number in page_obj.paginator.page_range %}
+											{% if page_obj.number == page_number %}
+												<li><a style="color:red; text-decoration: underline;" href="?page={{page_number}}&{{ query_params }}">{{page_number}}</a></li>
+											{% else %}
+												<li><a href="?page={{page_number}}&{{ query_params }}">{{page_number}}</a></li>
+											{% endif %}
+										{% endfor %}
+
+										{% if page_obj.has_next %}
+											<li><a href="?page={{ page_obj.next_page_number }}&{{ query_params }}"><i class="mdi mdi-menu-right"></i></a></li>
+										{% endif %}
+
+
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- product-list-view content section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

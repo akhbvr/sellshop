@@ -1,0 +1,4 @@
+.venv/
+pgdb/
+media/
+.DS_Store

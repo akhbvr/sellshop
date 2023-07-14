@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Single Blog
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>{{post.title}}</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span><a href="{% url 'blogs:posts' %}">blog </a></li>
+							<li><span> // </span>{{post.title}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- blog-section-start -->
+	<section class="pages blog single-blog-area section-padding-top">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-8 col-md-9">
+					<div class="single-blog-page">
+						<div class="single-blog-img">
+							<img src="{{post.main_image.url}}" alt="" />
+						</div>
+						<div class="padding30">
+
+							 
+
+							<div class="blog-text">
+								<div class="post-title">
+									<h3>{{post.title}}</h3>
+									<ul class="clearfix">
+										<li><i class="pe-7s-user"></i>By :<a href="#">{{post.author.username}}</a><span>|</span></li>
+										<li><i class="pe-7s-comment"></i><a href="#">{{post.created_at}}</a><span>|</span></li>
+										<li><i class="pe-7s-back"></i><a href="#">{{post.post.all.count}} Comments</a></li>
+									</ul>
+								</div>
+
+								<p>{{post.description}}</p>
+
+								<div class="share-tag clearfix">
+									<ul class="blog-share floatleft">
+										<li><h5>share </h5></li>
+										<li><a href="#"><i class="mdi mdi-facebook"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-twitter"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-linkedin"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-vimeo"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-instagram"></i></a></li>
+									</ul>
+								</div>
+								<div class="about-author comments">
+									<h4  id="comment">{{post.post.all.count}} comments</h4>
+								</div>
+								
+								{% for comment in post.post.all %}
+								{% if comment.parent is None %}
+								<hr>
+								<div class="about-author">
+									<div class="autohr-text">
+										<img style="width:90px; height: 90px; object-fit: cover;" src="{{comment.author.image.url}}" alt="" />
+										<div class="author-des">
+											<h4><a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a></h4>
+											{% if user.is_authenticated %}
+											<span class="floatright"><a id="reply_button" onclick="console.log(event.target.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.children[0][2]); event.target.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.children[0][2].setAttribute('value', '{{comment.id}}'); var replyDiv = document.getElementById('reply_comment_hidden{{ forloop.counter }}'); if (replyDiv.style.display === 'none') { replyDiv.style.display = 'block'; } else { replyDiv.style.display = 'none'; }" style="cursor: pointer;" >Reply</a></span>
+											{% endif %}
+											<span>{{comment.created_at}}</span>
+											<p>{{comment.comment}}</p>
+											<div style="display: none;" id="reply_comment_hidden{{forloop.counter}}">
+												<form action="#comment" method="POST">
+													{% csrf_token %}
+													{{form.comment}}
+													{{ form.parent }}
+													<div style="width: 100%; display: flex; justify-content: end; gap: 10px; margin-top: 10px;">
+														<button style="border: none; outline: none; background-color: transparent; font-size: 16px;" type="submit" value="submit form">Submit Comments</button>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<br>
+
+									{% for sub_comment in post.post.all %}
+									{% if comment.id == sub_comment.parent.id %}
+									<div style="border: none; padding-top:0; padding-bottom:0;" class="about-author reply">
+										<div class="autohr-text">
+											<img style="width: 90px; height: 90px; object-fit: cover;" src="{{sub_comment.author.image.url}}" alt="" />
+											<div class="author-des">
+												<h4><a href="#">{{sub_comment.author.first_name}} {{sub_comment.author.last_name}}</a></h4>
+												
+												<span>{{sub_comment.created_at}}</span>
+												<p>{{sub_comment.comment}}</p>
+											</div>
+										</div>
+									</div>
+									
+									{% endif %}
+									{% endfor %}
+
+
+								{% endif %}
+								{% endfor %}
+
+							</div>
+							<div class="leave-comment">
+								
+								<h4>leave your review</h4>
+								{% if user.is_authenticated %}
+								<form action="#comment" method="POST">
+									{% csrf_token %}
+									<div class="row">
+										<div class="col-xs-12">
+											<div class="input-text">
+												{{form.comment}}
+											</div>
+										</div>
+										<div class="col-xs-12">
+											<div class="submit-text">
+												<button type="submit" value="submit form">submit comments</button>
+											</div>
+										</div>
+									</div>
+								</form>
+								{% else %}
+								<div style="text-align: center;">
+									<h4 style="font-size: 16px; padding-bottom: 10px; margin: 0;">If you want to write a comment</h4>
+									<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+										<a href="{% url 'users:login' %}" style="border: 1px solid rgba(0, 0, 0, 0.4); border-radius: 5px; padding: 5px 15px; ">Login</a>
+										<h4 style="font-size: 16px; padding: 10px 0; margin: 0;">or</h4>
+										<a href="{% url 'users:login' %}" style="border: 1px solid rgba(0, 0, 0, 0.4); border-radius: 5px; padding: 5px 15px; ">Register</a>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+							
+						</div>
+					</div>
+					<!-- single post end -->
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3">
+					<div class="sidebar left-sidebar">
+						<div class="s-side-text">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">Categories</h4>
+								<h5 class="floatright"><a href="#">All</a></h5>
+							</div>
+							<div class="categories left-right-p">
+								<ul id="accordion" class="panel-group clearfix">
+									{% for category in categories %}
+									{% if category.parent is None %}
+									<li class="panel">
+										<div data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{forloop.counter}}">
+											<div class="medium-a">
+												{{category.name}}
+											</div>
+										</div>
+										<div class="panel-collapse collapse in" id="collapse{{forloop.counter}}">
+											<div class="normal-a">
+												{% for sub_category in category.parent_category.all %}
+												<a href="#">{{sub_category.name}}</a>
+												{% endfor %}
+											</div>
+										</div>
+									</li>
+									{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+						<div class="s-side-text">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">brands</h4>
+								<h5 class="floatright"><a href="#">All</a></h5>
+							</div>
+							<div class="brands-select clearfix">
+								<ul>
+									<li>
+										{% for brand in brands %}
+										<a href="#">{{brand.name}}</a>
+										{% endfor %}
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="s-side-text">
+							<div class="sidebar-title clearfix">
+								<h4 class="floatleft">recent post</h4>
+							</div>
+							<div class="recent-post clearfix">
+								<ul>
+									{% for post in posts %}
+									<li>
+										<a href="{% url 'blogs:single_post' slug=post.slug %}"><img src="{{post.cover_image.url}}" alt="" style="width: 100px;" /></a>
+										<h5><a href="#">{{post.title}}</a></h5>
+										<span>{{post.created_at}}</span>
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+						{% comment %} <div class="s-side-text">
+							<div class="banner clearfix">
+								<a href="#"><img  src="{% static  'img/products/banner.jpg' %}" alt=""  /></a>
+								<div class="banner-text">
+									<h2>best</h2> <br />
+									<h2 class="banner-brand">brand</h2>
+								</div>
+							</div>
+						</div> {% endcomment %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- blog section end -->
+	<!-- related post section start -->
+	<section class="related-post latest-blog section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="section-title text-center">
+						<h2>Related Post</h2>
+					</div>
+				</div>
+			</div>
+			<ul class="blog-row">
+				<li>
+					<div class="row">
+						{% for post in posts %}
+						<div class="col-sm-4">
+							<div class="l-blog-text">
+								<div class="banner"><a href="{% url 'blogs:single_post' slug=post.slug %}"><img src="{{post.cover_image.url}}" alt="" /></a></div>
+								<div class="s-blog-text">
+									<h4><a href="{% url 'blogs:single_post' slug=post.slug %}">{{post.title}}</a></h4>
+									<span>By : <a href="{% url 'blogs:single_post' slug=post.slug %}">{{post.author.username}}</a>
+									<p>{{post.short_description}}</p>
+								</div>
+								<div class="date-read clearfix">
+									<a href="{% url 'blogs:single_post' slug=post.slug %}"><i class="mdi mdi-clock"></i>{{post.created_at}}</a>
+									<a href="{% url 'blogs:single_post' slug=post.slug %}">read more</a>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</li>
+			</ul>
+		</div>
+	</section>
+	<!-- related post section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

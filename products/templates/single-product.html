@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Single Product
+{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+
+{% block content %}
+	<!-- pages-title-start -->
+	<div class="pages-title section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="pages-title-text text-center">
+						<h2>{{object.product.name}}</h2>
+						<ul class="text-left">
+							<li><a href="{% url 'home:home_page' %}">Home </a></li>
+							<li><span> // </span><a href="{% url 'products:product_list' %}">shop </a></li>
+							<li><span> // </span>{{object.product.name}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- pages-title-end -->
+	<!-- product-details-section-start -->
+	<div class="product-details pages section-padding-top">
+		<div class="container">
+			<div class="row">
+				<div class="single-list-view">
+					<div class="col-xs-12 col-sm-5 col-md-4">
+						<div class="quick-image">
+							<div class="single-quick-image text-center">
+								<div class="list-img">
+									<div class="product-img tab-content">
+
+										{% for image in object.productimage_productvariation.all %}
+										<div class="simpleLens-container tab-pane fade in {% if forloop.counter == 1%}active{% endif %} " id="sin-{{forloop.counter}}">
+											<div class="pro-type">
+												<span>new</span>
+											</div>
+											<a class="simpleLens-image" data-lens-image="{{image.image.url}}" href="#"><img src="{{image.image.url}}" alt="" class="simpleLens-big-image"></a>
+										</div>
+										{% endfor %}
+
+									</div>
+								</div>
+							</div>
+							<div class="quick-thumb">
+								<ul class="product-slider">
+									{% for image in object.productimage_productvariation.all %}
+									<li><a data-toggle="tab" href="#sin-{{forloop.counter}}"> <img src="{{image.image.url}}" alt="quick view" /> </a></li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-7 col-md-8">
+						<div class="quick-right">
+							<div class="list-text">
+								<h3>{{object.product.name}}</h3>
+								<span>{{object.product.category}}</span>
+								<div class="ratting floatright">
+									<p>( {{object.avg_rating}} Rating )</p>
+
+									{% if object.avg_rating == 0 %}
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating > 0 and object.avg_rating < 1 %}
+										<i class="mdi mdi-star-half"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating == 1 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating > 1 and object.avg_rating < 2 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-half"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating == 2 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating > 2 and object.avg_rating < 3 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-half"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating == 3 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-outline"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating > 3 and object.avg_rating < 4 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-half"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating == 4 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-outline"></i>
+									{% elif object.avg_rating > 4 and object.avg_rating < 5 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star-half"></i>
+									{% elif object.avg_rating >= 5 %}
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+										<i class="mdi mdi-star"></i>
+									{% endif %}
+
+									{% comment %}
+									<i class="mdi mdi-star"></i>
+									<i class="mdi mdi-star"></i>
+									<i class="mdi mdi-star"></i>
+									{% endcomment %}
+
+								</div>
+								<h5>{{object.price}} $</h5>
+								<p>{{object.short_desctiption}}</p>
+								<div class="all-choose">
+
+									{{object.productvariation_attribute_value.all}}
+
+									{% for value in object.product_attribute_values.all %}
+									<div class="s-shoose" style="display: flex; align-items: center; gap: 10px;">
+										<h5>{{value.attribute.name}}</h5>
+										<div class="color-select clearfix">
+											<p>{{value}}</p>
+										</div>
+									</div>
+									{% endfor %}
+
+								</div>
+								<div class="list-btn">
+									<a href="#">add to cart</a>
+									<a href="#">wishlist</a>
+								</div>
+								<div class="share-tag clearfix">
+									<ul class="blog-share floatleft">
+										<li><h5>share </h5></li>
+										<li><a href="#"><i class="mdi mdi-facebook"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-twitter"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-linkedin"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-vimeo"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-dribbble"></i></a></li>
+										<li><a href="#"><i class="mdi mdi-instagram"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- single-product item end -->
+			<!-- reviews area start -->
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="reviews padding60 margin-top">
+						<ul class="reviews-tab clearfix">
+							<li><a data-toggle="tab" href="#moreinfo">more info</a></li>
+							<li class="active"><a data-toggle="tab" href="#reviews">Reviews</a></li>
+							<li><a data-toggle="tab" href="#tags">tags</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="info-reviews moreinfo tab-pane fade in" id="moreinfo">
+								<p>{{object.description}}</p>
+							</div>
+							<div class="info-reviews review-text tab-pane fade in active" id="reviews">
+								
+								{% for review in object.review.all %}
+								<div class="about-author">
+									<div class="autohr-text">
+										<img style="width: 100px; height: 100px; object-fit: cover;" src="{{review.customer.image.url}}" alt="" />
+										<div class="author-des">
+											<h4><a href="#">{{review.customer.get_full_name}}</a></h4>
+											<span class="floatright ratting">
+
+												{% if review.rating == 1 %}
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												{% elif review.rating == 2 %}
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												{% elif review.rating == 3 %}
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star-outline"></i>
+												<i class="mdi mdi-star-outline"></i>
+												{% elif review.rating == 4 %}
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star-outline"></i>
+												{% elif review.rating == 5 %}
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												<i class="mdi mdi-star"></i>
+												{% endif %}
+
+											</span>
+											<span>{{review.created_at}}</span>
+											<p>{{review.comment}}</p>
+										</div>
+									</div>
+								</div>
+								<hr />
+								{% endfor %}
+								
+								<div class="your-rating log-title">
+									<h3>leave your review</h3>
+									{% if user.is_authenticated %}
+									<h5>Your rating</h5>
+									<div class="rating clearfix">
+										<ul>
+											<script>
+												document.addEventListener('DOMContentLoaded', function() {
+													var ratingLinks = document.getElementsByClassName('rating-link');
+													var ratingInput = document.getElementById('id_rating');
+												  
+													for (var i = 0; i < ratingLinks.length; i++) {
+													  ratingLinks[i].addEventListener('click', function(event) {
+														event.preventDefault();
+														var value = this.getAttribute('data-value');
+														ratingInput.value = value;
+													  });
+													}
+												  });
+											</script>
+											<li>
+												<a href="" class="rating-link" data-value="1">
+													<i class="mdi mdi-star-outline"></i>
+												</a>
+												<span>|</span>
+											</li>
+											<li>
+												<a href="" class="rating-link" data-value="2">
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+												</a>
+												<span>|</span>
+											</li>
+											<li>
+												<a href="" class="rating-link" data-value="3">
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+												</a>
+												<span>|</span>
+											</li>
+											<li>
+												<a href="" class="rating-link" data-value="4">
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+												</a>
+												<span>|</span>
+											</li>
+											<li>
+												<a href="" class="rating-link" data-value="5">
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+													<i class="mdi mdi-star-outline"></i>
+												</a>
+											</li>
+										</ul>
+									</div>
+									{% endif %}
+								</div>
+								
+								<div class="custom-input">
+									{% if user.is_authenticated %}
+									<form action="" method="POST">
+										{% csrf_token %}
+										<div class="row">
+											<div class="col-xs-12">
+												<div class="custom-mess">
+													{{form.errors}}
+													{{form.rating}}
+													{{form.comment}}
+												</div>
+											</div>
+											<div class="col-xs-12">
+												<div class="submit-text">
+													<button type="submit">submit review</button>
+												</div>
+											</div>
+										</div>
+									</form>
+									{% else %}
+									<div style="text-align: center;">
+										<h4 style="font-size: 16px; padding-bottom: 10px; margin: 0;">If you want to write a comment</h4>
+										<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+											<a href="{% url 'users:login' %}" style="border: 1px solid rgba(0, 0, 0, 0.4); border-radius: 5px; padding: 5px 15px; ">Login</a>
+											<h4 style="font-size: 16px; padding: 10px 0; margin: 0;">or</h4>
+											<a href="{% url 'users:login' %}" style="border: 1px solid rgba(0, 0, 0, 0.4); border-radius: 5px; padding: 5px 15px; ">Register</a>
+										</div>
+									</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="info-reviews tags tab-pane fade in" id="tags">
+								{% for tag in object.product_tags.all %}
+								<p>{{tag}}</p>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- reviews area end -->
+		</div>
+	</div>
+	<!-- product-details section end -->
+	<!-- related-products section start -->
+	<section class="single-products section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="section-title text-center">
+						<h2>related Products</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row text-center">
+				{% for product in products %}
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="single-product">
+						<div class="product-img">
+							<div class="pro-type">
+								<span>new</span>
+							</div>
+							<a href="{% url 'products:single_product' slug=product.slug %}"><img src="{{product.main_image.url}}" alt="{{product.product.name}}" /></a>
+							<div class="actions-btn" style="display: flex; align-items: center; justify-content: center; width: 100%; left: 0; margin-left: 0;">
+								<a href="#"><i class="mdi mdi-cart"></i></a>
+								<a href="#"><i class="mdi mdi-heart"></i></a>
+							</div>
+						</div>
+						<div class="product-dsc">
+							<p><a href="{% url 'products:single_product' slug=product.slug %}">{{product.product.name}}</a></p>
+							<span>{{product.price}} $</span>
+						</div>
+					</div>
+				</div>
+				<!-- single product end -->
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+	<!-- related-products section end -->
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
