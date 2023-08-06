@@ -2,3 +2,4 @@
 pgdb/
 media/
 .DS_Store
+sellshop/settings.py

@@ -8,4 +8,11 @@ from orders.models import (
     WishList,
 )
 
-admin.site.register([Order, OrderItem, ShippingAddress, WishList])
+admin.site.register([OrderItem, ShippingAddress, WishList])
+
+class OrderItemLine(admin.TabularInline):
+    model = OrderItem
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemLine]

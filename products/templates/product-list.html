@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load products %}
 
 {% block title %}
 Product List View
@@ -133,6 +134,7 @@ Product List View
 								<div class="tab-pane fade active in" id="list">
 									<div class="col-xs-12">
 										{% for product in productvariation_list %}
+
 										<div class="single-list-view">
 											<div class="row">
 												<div class="col-xs-12 col-md-4">
@@ -225,51 +227,32 @@ Product List View
 														</h5>
 														<p>{{product.short_desctiption}}</p>
 														<div class="list-btn">
-															<a href="#">add to cart</a>
-															<a style="cursor:pointer;" onclick="addProduct({{product.id}})">wishlist</a>
-						<script>
-							function addProduct(id) {
-								const formData = {
-								  "product_variation": [id],
-								};
+															
+															
 
-								fetch("http://localhost:8000/api/wishlist/", {
-								  method: "POST",
-								  headers: {
-									"Content-type": "application/json",
-									// "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg4OTA0NDQ1LCJpYXQiOjE2ODg5MDA4NDUsImp0aSI6ImM1OWNjY2MyZDM0MTQwNzVhMjNhMTljNzMzNTQ4YmI1IiwidXNlcl9pZCI6N30.fpripW9EWt69yytNwIaIZSs8StkYRSG1w1R4rcmGD8U",
-									'X-CSRFToken': getCookie('csrftoken')
-								  },
-								  body: JSON.stringify(formData)
-								})
-								.then(response => {
-								  if (response.ok) {
-									alert('Product added successfully');
-								  } else {
-									alert('The product is in the wishlist or an error occurred while adding the product');
-								  }
-								})
-								.catch(error => {
-								  alert('The product is in the wishlist or an error occurred while adding the product:', error);
-								});
-							  }
-							  
-							  function getCookie(name) {
-								let cookieValue = null;
-								if (document.cookie && document.cookie !== '') {
-									const cookies = document.cookie.split(';');
-									for (let i = 0; i < cookies.length; i++) {
-										const cookie = cookies[i].trim();
-										if (cookie.substring(0, name.length + 1) === (name + '=')) {
-											cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-									  break;
-									}
-								  }
-								}
-								return cookieValue;
-							  }
-							  
-						</script>
+			{% if request.user.is_authenticated %}
+			{% check_basket product request.user as basket_response %}
+				{% if basket_response %}
+				<a style="cursor: pointer; background: rgba(0,170,0,1);color:white;" onclick="deleteBasket({{product.id}})">add to cart</a>
+				{% else %}
+				<a style="cursor: pointer;" onclick="addBasket({{ product.id }})">add to cart</a>
+				{% endif %}
+			{% else %}
+				<a href="{% url 'users:login' %}">add to cart</a>
+			{% endif %}												
+
+															
+			{% if request.user.is_authenticated %}
+			{% is_product_in_wishlist product request.user as wishlist_response %}
+				{% if wishlist_response %}
+					{% get_wishlist_id request.user as wishlist_id %}
+					<a style="cursor:pointer; background: rgba(0,170,0,1);color:white;" onclick="deleteProduct({{wishlist_id}}, {{product.id}});">wishlist</a>
+				{% else %}
+					<a style="cursor:pointer;" onclick="addProduct({{ product.id }})">wishlist</a>
+				{% endif %}
+			{% else %}
+				<a href="{% url 'users:login' %}">wishlist</a>
+			{% endif %}
 														</div>
 													</div>
 												</div>
@@ -316,4 +299,5 @@ Product List View
 {% endblock content %}
 
 {% block js %}
+<script src="{% static "js/api.js" %}"></script>
 {% endblock js %}

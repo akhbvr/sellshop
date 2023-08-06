@@ -7,27 +7,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Order(models.Model):
-    status = models.BooleanField(verbose_name='Status', default=False)
-    total_amount = models.FloatField(verbose_name='Total amount')
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = 'Order'
-        verbose_name_plural = 'Orders'
-
-    def __str__(self):
-        return self.status
-
-
 class OrderItem(models.Model):
     quantity = models.IntegerField(verbose_name='Quantity')
-    price = models.FloatField(verbose_name='Price')
+    total_amount = models.FloatField(verbose_name='Total amount', null=True, blank=True, editable=False)
 
-    order = models.ForeignKey(Order, verbose_name='Order', on_delete=models.CASCADE, related_name='orderitem_order')
     product_variation = models.ForeignKey(ProductVariation, verbose_name='Product variation', on_delete=models.CASCADE, related_name='orderitem_product_variation')
+    order = models.ForeignKey('orders.Order', on_delete=models.CASCADE, related_name='orderitem_order')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -37,7 +22,27 @@ class OrderItem(models.Model):
         verbose_name_plural = 'Order Items'
 
     def __str__(self):
-        return self.product_variation.product.name
+        return f"{self.product_variation.product.name}"
+    
+    def save(self, *args, **kwargs):
+        self.total_amount = self.product_variation.price * self.quantity
+        return super().save(*args, **kwargs)
+
+
+class Order(models.Model):
+    status = models.BooleanField(verbose_name='Status', default=False)
+
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Order'
+        verbose_name_plural = 'Orders'
+
+    def __str__(self):
+        return f"{self.customer.username}"
 
 
 class ShippingAddress(models.Model):

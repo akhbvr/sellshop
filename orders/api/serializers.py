@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from products.models import ProductVariation, AttributeValue, Attribute, Product, Brand
-from orders.models import WishList
+from orders.models import WishList, Order, OrderItem
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -97,6 +97,53 @@ class WishListSerializer(serializers.ModelSerializer):
             "id",
             "product_variation",
             "customer",
+        )
+
+
+class OrderItemCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = (
+            'quantity',
+            'product_variation',
+            'order',
+        )
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_variation = ProductVariationSerializer()
+    class Meta:
+        model = OrderItem
+        fields = (
+            'id',
+            'quantity',
+            'total_amount',
+            'product_variation',
+            'order',
+        )
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer()
+    product_variation = serializers.SerializerMethodField()
+    class Meta:
+        model = Order
+        fields = (
+            'status',
+            'customer',
+            'product_variation',
+        )
+    def get_product_variation(self, obj):
+        serializer = OrderItemSerializer(obj.orderitem_order.all(), context=self.context ,many=True)
+        return serializer.data
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = (
+            'status',
+            'customer',
         )
 
 
